@@ -9,6 +9,7 @@
     docker_mycroft_branch: master
     docker_mycroft_namespace: smartgic
     docker_mycroft_tag: latest
+    docker_mycroft_version: master
     docker_mycroft_arch: "{{ ansible_architecture }}"
     docker_mycroft_username:
     docker_mycroft_password:
@@ -35,7 +36,7 @@
           nocache: yes
           dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
           args:
-            BRANCH: "{{ docker_mycroft_tag }}"
+            BRANCH: "{{ docker_mycroft_version }}"
         name: "{{ docker_mycroft_namespace }}/mycroft-base"
         tag: "{{ tag_name }}"
         push: yes
