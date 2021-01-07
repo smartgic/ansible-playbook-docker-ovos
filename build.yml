@@ -1,0 +1,82 @@
+---
+- hosts: rpi
+  gather_facts: yes
+  become: no
+
+  vars:
+    docker_mycroft_workdir: ~/docker-mycroft
+    docker_mycroft_repository: https://github.com/smartgic/docker-mycroft.git
+    docker_mycroft_branch: master
+    docker_mycroft_namespace: smartgic
+    docker_mycroft_tag: dev
+    docker_mycroft_arch: "{{ ansible_architecture }}"
+    docker_mycroft_username:
+    docker_mycroft_password:
+
+  tasks:
+    - name: Log into DockerHub
+      community.general.docker_login:
+        username: "{{ docker_mycroft_username }}"
+        password: "{{ docker_mycroft_password }}"
+
+    - name: Retrieve Dockerfiles from Git
+      git:
+        repo: "{{ docker_mycroft_repository }}"
+        dest: "{{ docker_mycroft_workdir }}"
+        version: "{{ docker_mycroft_branch }}"
+
+    - name: Build mycroft-base image
+      vars:
+        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
+      community.general.docker_image:
+        build:
+          path: "{{ docker_mycroft_workdir }}/base"
+          pull: yes
+          nocache: yes
+          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
+          args:
+            BRANCH: "{{ docker_mycroft_tag }}"
+        name: "{{ docker_mycroft_namespace }}/mycroft-base"
+        tag: "{{ tag_name }}"
+        push: yes
+        source: build
+
+    - name: Build mycroft-voice image
+      vars:
+        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
+      community.general.docker_image:
+        build:
+          path: "{{ docker_mycroft_workdir }}/voice"
+          pull: yes
+          nocache: yes
+          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
+          args:
+            XDG: "{{ lookup('env','XDG_RUNTIME_DIR') }}"
+        name: "{{ docker_mycroft_namespace }}/mycroft-voice"
+        tag: "{{ tag_name }}"
+        push: yes
+        source: build
+
+    - name: Build mycroft-{bus|enclosure|audio|skills|cli} images
+      vars:
+        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
+      community.general.docker_image:
+        build:
+          path: "{{ docker_mycroft_workdir }}/{{ item }}"
+          pull: yes
+          nocache: yes
+          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
+        name: "{{ docker_mycroft_namespace }}/mycroft-{{ item }}"
+        tag: "{{ tag_name }}"
+        push: yes
+        source: build
+      loop:
+        - bus
+        - enclosure
+        - audio
+        - skills
+        - cli
+
+    - name: Logout from DockerHub
+      community.general.docker_login:
+        state: absent
