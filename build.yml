@@ -15,7 +15,7 @@
 
   tasks:
     - name: Log into DockerHub
-      community.general.docker_login:
+      docker_login:
         username: "{{ docker_mycroft_username }}"
         password: "{{ docker_mycroft_password }}"
 
@@ -28,7 +28,7 @@
     - name: Build mycroft-base image
       vars:
         tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      community.general.docker_image:
+      docker_image:
         build:
           path: "{{ docker_mycroft_workdir }}/base"
           pull: yes
@@ -44,7 +44,7 @@
     - name: Build mycroft-voice image
       vars:
         tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      community.general.docker_image:
+      docker_image:
         build:
           path: "{{ docker_mycroft_workdir }}/voice"
           pull: yes
@@ -60,7 +60,7 @@
     - name: Build mycroft-{bus|enclosure|audio|skills|cli} images
       vars:
         tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      community.general.docker_image:
+      docker_image:
         build:
           path: "{{ docker_mycroft_workdir }}/{{ item }}"
           pull: yes
@@ -78,5 +78,5 @@
         - cli
 
     - name: Logout from DockerHub
-      community.general.docker_login:
+      docker_login:
         state: absent
