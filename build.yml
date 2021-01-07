@@ -8,7 +8,7 @@
     docker_mycroft_repository: https://github.com/smartgic/docker-mycroft.git
     docker_mycroft_branch: master
     docker_mycroft_namespace: smartgic
-    docker_mycroft_tag: dev
+    docker_mycroft_tag: latest
     docker_mycroft_arch: "{{ ansible_architecture }}"
     docker_mycroft_username:
     docker_mycroft_password:
