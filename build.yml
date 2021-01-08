@@ -37,8 +37,6 @@
           dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
           args:
             BRANCH: "{{ docker_mycroft_version }}"
-        buildargs:
-          BRANCH: "{{ docker_mycroft_version }}"
         name: "{{ docker_mycroft_namespace }}/mycroft-base"
         tag: "{{ tag_name }}"
         push: yes
