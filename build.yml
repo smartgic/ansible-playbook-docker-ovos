@@ -10,7 +10,6 @@
     docker_mycroft_namespace: smartgic
     docker_mycroft_tag: latest
     docker_mycroft_version: master
-    docker_mycroft_arch: "{{ ansible_architecture }}"
     docker_mycroft_username:
     docker_mycroft_password:
 
@@ -26,57 +25,25 @@
         dest: "{{ docker_mycroft_workdir }}"
         version: "{{ docker_mycroft_branch }}"
 
-    - name: Build mycroft-base image
-      vars:
-        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      docker_image:
-        build:
-          path: "{{ docker_mycroft_workdir }}/base"
-          pull: yes
-          nocache: yes
-          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
-          args:
-            BRANCH: "{{ docker_mycroft_version }}"
-        name: "{{ docker_mycroft_namespace }}/mycroft-base"
-        tag: "{{ tag_name }}"
-        push: yes
-        source: build
-
-    - name: Build mycroft-voice image
-      vars:
-        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      docker_image:
-        build:
-          path: "{{ docker_mycroft_workdir }}/voice"
-          pull: yes
-          nocache: yes
-          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
-          args:
-            XDG: "{{ lookup('env','XDG_RUNTIME_DIR') }}"
-        name: "{{ docker_mycroft_namespace }}/mycroft-voice"
-        tag: "{{ tag_name }}"
-        push: yes
-        source: build
-
-    - name: Build mycroft-{bus|enclosure|audio|skills|cli} images
-      vars:
-        tag_name: "{{ docker_mycroft_arch }}-{{ docker_mycroft_tag }}"
-      docker_image:
-        build:
-          path: "{{ docker_mycroft_workdir }}/{{ item }}"
-          pull: yes
-          nocache: yes
-          dockerfile: "Dockerfile.{{ docker_mycroft_arch }}"
-        name: "{{ docker_mycroft_namespace }}/mycroft-{{ item }}"
-        tag: "{{ tag_name }}"
-        push: yes
-        source: build
+    - name: Build Docker dev images
+      shell:
+        cmd: |
+          docker buildx build \
+            -t {{ docker_mycroft_namespace }}/mycroft-$i:{{ docker_mycroft_tag }} \
+            -t {{ docker_mycroft_namespace }}/mycroft-$i:latest \
+            --build-arg TAG={{ docker_mycroft_tag }} \
+            --build-arg BRANCH={{ docker_mycroft_version }} \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
+            --push {{ docker_mycroft_workdir }}/{{ item }}/
+        executable: /bin/bash
       loop:
-        - bus
-        - enclosure
+        - base
         - audio
-        - skills
+        - bus
         - cli
+        - enclosure
+        - skills
+        - voice
 
     - name: Logout from DockerHub
       docker_login:
