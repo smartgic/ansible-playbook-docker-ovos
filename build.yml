@@ -29,8 +29,8 @@
       shell:
         cmd: |
           docker buildx build \
-            -t {{ docker_mycroft_namespace }}/mycroft-$i:{{ docker_mycroft_tag }} \
-            -t {{ docker_mycroft_namespace }}/mycroft-$i:latest \
+            -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:{{ docker_mycroft_tag }} \
+            -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:latest \
             --build-arg TAG={{ docker_mycroft_tag }} \
             --build-arg BRANCH={{ docker_mycroft_version }} \
             --platform linux/amd64,linux/arm64,linux/arm/v7 \
