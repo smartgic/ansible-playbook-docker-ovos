@@ -26,16 +26,16 @@
         version: "{{ docker_mycroft_branch }}"
 
     - name: Build Docker dev images
-      shell:
-        cmd: >
+      shell: >
           docker buildx build
             -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:{{ docker_mycroft_tag }}
             -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:latest
             --build-arg TAG={{ docker_mycroft_tag }}
             --build-arg BRANCH={{ docker_mycroft_version }}
             --platform linux/amd64,linux/arm64,linux/arm/v7
-            --push {{ docker_mycroft_workdir }}/{{ item }}/
+            --push {{ item }}/
         executable: /bin/bash
+        chdir: "{{ docker_mycroft_workdir }}"
       loop:
         - base
         - audio
