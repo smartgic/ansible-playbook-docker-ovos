@@ -27,7 +27,7 @@
 
     - name: Build Docker dev images
       shell:
-        cmd: |
+        cmd: >
           docker buildx build
             -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:{{ docker_mycroft_tag }}
             -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:latest
