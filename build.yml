@@ -9,7 +9,7 @@
     docker_mycroft_branch: master
     docker_mycroft_namespace: smartgic
     docker_mycroft_tag: latest
-    docker_mycroft_stable_release: 20.8.1
+    docker_mycroft_stable_release: 21.2.0
     docker_mycroft_version: master
     docker_mycroft_username:
     docker_mycroft_password:
