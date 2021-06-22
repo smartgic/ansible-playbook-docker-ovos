@@ -16,18 +16,18 @@
 
   tasks:
     - name: Log into DockerHub
-      docker_login:
+      community.docker.docker_login:
         username: "{{ docker_mycroft_username }}"
         password: "{{ docker_mycroft_password }}"
 
     - name: Retrieve Dockerfiles from Git
-      git:
+      ansible.builtin.git:
         repo: "{{ docker_mycroft_repository }}"
         dest: "{{ docker_mycroft_workdir }}"
         version: "{{ docker_mycroft_branch }}"
 
     - name: Build Docker dev images
-      shell:
+      ansible.builtin.shell:
         cmd: >-
           docker buildx build
           -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:{{ docker_mycroft_tag }}
@@ -49,7 +49,7 @@
       when: docker_mycroft_version == "dev"
 
     - name: Build Docker stable images
-      shell:
+      ansible.builtin.shell:
         cmd: >-
           docker buildx build
           -t {{ docker_mycroft_namespace }}/mycroft-{{ item }}:{{ docker_mycroft_tag }}
@@ -72,5 +72,5 @@
       when: docker_mycroft_version == "master"
 
     - name: Logout from DockerHub
-      docker_login:
+      community.docker.docker_login:
         state: absent
