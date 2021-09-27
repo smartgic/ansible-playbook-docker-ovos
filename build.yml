@@ -9,7 +9,7 @@
     docker_mycroft_branch: master
     docker_mycroft_namespace: smartgic
     docker_mycroft_tag: latest
-    docker_mycroft_stable_release: 21.2.0
+    docker_mycroft_stable_release: 21.2.1
     docker_mycroft_version: master
     docker_mycroft_username:
     docker_mycroft_password:
@@ -35,6 +35,7 @@
           --build-arg TAG={{ docker_mycroft_tag }}
           --build-arg BRANCH={{ docker_mycroft_version }}
           --platform linux/amd64,linux/arm64,linux/arm/v7
+          --no-cache
           --push {{ item }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
@@ -58,6 +59,7 @@
           --build-arg TAG={{ docker_mycroft_tag }}
           --build-arg BRANCH={{ docker_mycroft_version }}
           --platform linux/amd64,linux/arm64,linux/arm/v7
+          --no-cache
           --push {{ item }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
