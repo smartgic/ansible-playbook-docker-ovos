@@ -24,7 +24,7 @@
           -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:latest
           --build-arg TAG={{ docker_mycroft_tag }}
           --build-arg BRANCH={{ docker_mycroft_version }}
-          --platform {{ docker_mycroft_arch }}
+          --platform linux/{{ docker_mycroft_arch }}
           --push {{ docker_mycroft_image }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
