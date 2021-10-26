@@ -9,18 +9,10 @@
     docker_mycroft_tag: latest
     docker_mycroft_stable_release: 21.2.1
     docker_mycroft_version: master
-    docker_mycroft_username:
-    docker_mycroft_password:
     docker_mycroft_arch: amd64
     docker_mycroft_image: base
 
-  tasks:
-    - name: Log into DockerHub
-      community.docker.docker_login:
-        username: "{{ docker_mycroft_username }}"
-        password: "{{ docker_mycroft_password }}"
-
-    - name: Build Docker {{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture
+    - name: Build Docker mycroft-{{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture - DEV
       ansible.builtin.shell:
         cmd: >-
           docker buildx build
@@ -37,7 +29,7 @@
         - DOCKER_CLI_EXPERIMENTAL: enabled
       when: docker_mycroft_version == "dev"
 
-    - name: Build Docker stable images
+    - name: Build Docker mycroft-{{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture - STABLE
       ansible.builtin.shell:
         cmd: >-
           docker buildx build
@@ -54,7 +46,3 @@
       environment:
         - DOCKER_CLI_EXPERIMENTAL: enabled
       when: docker_mycroft_version == "master"
-
-    - name: Logout from DockerHub
-      community.docker.docker_login:
-        state: absent
