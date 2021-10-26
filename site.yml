@@ -12,6 +12,7 @@
     docker_mycroft_arch: amd64
     docker_mycroft_image: base
 
+  tasks:
     - name: "Build Docker mycroft-{{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture - DEV"
       ansible.builtin.shell:
         cmd: >-
