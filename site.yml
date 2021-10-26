@@ -1,0 +1,55 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: no
+
+  vars:
+    docker_mycroft_workdir: ~/docker-mycroft
+    docker_mycroft_namespace: smartgic
+    docker_mycroft_tag: latest
+    docker_mycroft_stable_release: 21.2.1
+    docker_mycroft_version: master
+    docker_mycroft_username:
+    docker_mycroft_password:
+    docker_mycroft_arch: amd64
+    docker_mycroft_image: base
+
+  tasks:
+    - name: Build Docker dev images
+      ansible.builtin.shell:
+        cmd: >-
+          docker buildx build
+          --no-cache
+          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_tag }}
+          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:latest
+          --build-arg TAG={{ docker_mycroft_tag }}
+          --build-arg BRANCH={{ docker_mycroft_version }}
+          --platform {{ docker_mycroft_arch }}
+          --push {{ docker_mycroft_image }}/
+        executable: /bin/bash
+        chdir: "{{ docker_mycroft_workdir }}"
+      env:
+        - DOCKER_CLI_EXPERIMENTAL: enabled
+      when: docker_mycroft_version == "dev"
+
+    - name: Build Docker stable images
+      ansible.builtin.shell:
+        cmd: >-
+          docker buildx build
+          --no-cache
+          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_tag }}
+          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:stable
+          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_stable_release }}
+          --build-arg TAG={{ docker_mycroft_tag }}
+          --build-arg BRANCH={{ docker_mycroft_version }}
+          --platform linux/{{ docker_mycroft_arch }}
+          --push {{ docker_mycroft_image }}/
+        executable: /bin/bash
+        chdir: "{{ docker_mycroft_workdir }}"
+      env:
+        - DOCKER_CLI_EXPERIMENTAL: enabled
+      when: docker_mycroft_version == "master"
+
+    - name: Logout from DockerHub
+      community.docker.docker_login:
+        state: absent

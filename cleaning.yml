@@ -1,0 +1,16 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars:
+    docker_mycroft_workdir: ~/docker-mycroft
+
+  tasks:
+    - name: Logout from DockerHub
+      community.docker.docker_login:
+        state: absent
+
+    - name: Remove Git project
+      ansible.builtin.file:
+        path: "{{ docker_mycroft_workdir }}"
+        state: absent
