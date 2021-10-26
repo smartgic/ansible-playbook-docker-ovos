@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  gather_facts: yes
+  gather_facts: no
   become: no
 
   vars:
@@ -15,7 +15,12 @@
     docker_mycroft_image: base
 
   tasks:
-    - name: Build Docker dev images
+    - name: Log into DockerHub
+      community.docker.docker_login:
+        username: "{{ docker_mycroft_username }}"
+        password: "{{ docker_mycroft_password }}"
+
+    - name: Build Docker {{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture
       ansible.builtin.shell:
         cmd: >-
           docker buildx build
