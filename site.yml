@@ -28,7 +28,7 @@
           --push {{ docker_mycroft_image }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
-      env:
+      environment:
         - DOCKER_CLI_EXPERIMENTAL: enabled
       when: docker_mycroft_version == "dev"
 
@@ -46,7 +46,7 @@
           --push {{ docker_mycroft_image }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
-      env:
+      environment:
         - DOCKER_CLI_EXPERIMENTAL: enabled
       when: docker_mycroft_version == "master"
 
