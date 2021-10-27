@@ -9,7 +9,7 @@
     docker_mycroft_tag: latest
     docker_mycroft_stable_release: 21.2.1
     docker_mycroft_version: master
-    docker_mycroft_arch: amd64
+    docker_mycroft_arch: linux/amd64
     docker_mycroft_image: base
 
   tasks:
@@ -22,7 +22,7 @@
           -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:latest
           --build-arg TAG={{ docker_mycroft_tag }}
           --build-arg BRANCH={{ docker_mycroft_version }}
-          --platform linux/{{ docker_mycroft_arch }}
+          --platform {{ docker_mycroft_arch }}
           --push {{ docker_mycroft_image }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
@@ -40,7 +40,7 @@
           -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_stable_release }}
           --build-arg TAG={{ docker_mycroft_tag }}
           --build-arg BRANCH={{ docker_mycroft_version }}
-          --platform linux/{{ docker_mycroft_arch }}
+          --platform {{ docker_mycroft_arch }}
           --push {{ docker_mycroft_image }}/
         executable: /bin/bash
         chdir: "{{ docker_mycroft_workdir }}"
