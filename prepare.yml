@@ -12,8 +12,8 @@
   tasks:
     - name: Log into Docker Hub
       community.docker.docker_login:
-        username: "{{ docker_username }}"
-        password: "{{ docker_password }}"
+        username: "{{ docker_ovos_username }}"
+        password: "{{ docker_ovos_password }}"
 
     - name: Retrieve Dockerfiles from Git
       ansible.builtin.git:
