@@ -6,8 +6,7 @@
   vars:
     docker_ovos_workdir: ~/docker-ovos
     docker_ovos_repository: https://github.com/OpenVoiceOS/ovos-docker.git
-    docker_ovos_branch: master
-    docker_ovos_binfmt_image: tonistiigi/binfmt
+    docker_ovos_branch: dev
 
   tasks:
     - name: Log into Docker Hub
