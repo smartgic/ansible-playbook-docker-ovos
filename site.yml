@@ -1,49 +1,50 @@
 ---
-- hosts: all
+- name: Build Open Voice OS Docker images
+  hosts: all
   gather_facts: no
   become: no
 
   vars:
-    docker_mycroft_workdir: ~/docker-mycroft
-    docker_mycroft_namespace: smartgic
-    docker_mycroft_tag: latest
-    docker_mycroft_stable_release: 21.2.1
-    docker_mycroft_version: master
-    docker_mycroft_arch: linux/amd64
-    docker_mycroft_image: base
+    docker_ovos_workdir: ~/docker-ovos
+    docker_ovos_namespace: smartgic
+    docker_ovos_stable_release: 0.0.8
+    docker_ovos_version: master
+    docker_ovos_arch: linux/amd64
+    docker_ovos_image: base
 
   tasks:
-    - name: "Build Docker mycroft-{{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture - DEV"
+    - name: ALPHA - Build ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
       ansible.builtin.shell:
         cmd: >-
           docker buildx build
           --no-cache
-          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_tag }}
-          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:latest
-          --build-arg TAG={{ docker_mycroft_tag }}
-          --build-arg BRANCH={{ docker_mycroft_version }}
-          --platform {{ docker_mycroft_arch }}
-          --push {{ docker_mycroft_image }}/
+          -t {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:alpha
+          -t {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
+          --build-arg ALPHA=true
+          --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          --build-arg VERSION={{ docker_ovos_stable_release }}a
+          --platform {{ docker_ovos_arch }}
+          --push {{ docker_ovos_image }}/
         executable: /bin/bash
-        chdir: "{{ docker_mycroft_workdir }}"
-      environment:
-        - DOCKER_CLI_EXPERIMENTAL: enabled
-      when: docker_mycroft_version == "dev"
+        chdir: "{{ docker_ovos_workdir }}"
+      register: dev_build_output
+      changed_when: dev_build_output.rc == 0
+      when: docker_ovos_version == "alpha"
 
-    - name: "Build Docker mycroft-{{ docker_mycroft_image }} image for {{ docker_mycroft_arch }} architecture - STABLE"
+    - name: STABLE - Build ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
       ansible.builtin.shell:
         cmd: >-
           docker buildx build
           --no-cache
-          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_tag }}
-          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:stable
-          -t {{ docker_mycroft_namespace }}/mycroft-{{ docker_mycroft_image }}:{{ docker_mycroft_stable_release }}
-          --build-arg TAG={{ docker_mycroft_tag }}
-          --build-arg BRANCH={{ docker_mycroft_version }}
-          --platform {{ docker_mycroft_arch }}
-          --push {{ docker_mycroft_image }}/
+          -t {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:stable
+          -t {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
+          --build-arg ALPHA=false
+          --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          --build-arg VERSION={{ docker_ovos_stable_release }}
+          --platform {{ docker_ovos_arch }}
+          --push {{ docker_ovos_image }}/
         executable: /bin/bash
-        chdir: "{{ docker_mycroft_workdir }}"
-      environment:
-        - DOCKER_CLI_EXPERIMENTAL: enabled
-      when: docker_mycroft_version == "master"
+        chdir: "{{ docker_ovos_workdir }}"
+      register: stable_build_output
+      changed_when: stable_build_output.rc == 0
+      when: docker_ovos_version == "master"

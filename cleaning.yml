@@ -1,16 +1,17 @@
 ---
-- hosts: all
+- name: Clean Open Voice OS Docker images build
+  hosts: all
   gather_facts: no
 
   vars:
-    docker_mycroft_workdir: ~/docker-mycroft
+    docker_ovos_workdir: ~/docker-ovos
 
   tasks:
-    - name: Logout from DockerHub
+    - name: Logout from Docker Hub
       community.docker.docker_login:
         state: absent
 
     - name: Remove Git project
       ansible.builtin.file:
-        path: "{{ docker_mycroft_workdir }}"
+        path: "{{ docker_ovos_workdir }}"
         state: absent

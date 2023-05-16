@@ -1,25 +1,22 @@
 ---
-- hosts: all
+- name: Prepare Open Voice OS Docker images build
+  hosts: all
   gather_facts: no
 
   vars:
-    docker_mycroft_workdir: ~/docker-mycroft
-    docker_mycroft_repository: https://github.com/smartgic/docker-mycroft.git
-    docker_mycroft_branch: master
-    docker_mycroft_binfmt_image: tonistiigi/binfmt
+    docker_ovos_workdir: ~/docker-ovos
+    docker_ovos_repository: https://github.com/OpenVoiceOS/ovos-docker.git
+    docker_ovos_branch: master
+    docker_ovos_binfmt_image: tonistiigi/binfmt
 
   tasks:
-    - name: Install binfmt files
-      ansible.builtin.command:
-        docker run --privileged --rm {{ docker_mycroft_binfmt_image }} --install all
-
-    - name: Log into DockerHub
+    - name: Log into Docker Hub
       community.docker.docker_login:
-        username: "{{ docker_mycroft_username }}"
-        password: "{{ docker_mycroft_password }}"
+        username: "{{ docker_ovos_username }}"
+        password: "{{ docker_ovos_password }}"
 
     - name: Retrieve Dockerfiles from Git
       ansible.builtin.git:
-        repo: "{{ docker_mycroft_repository }}"
-        dest: "{{ docker_mycroft_workdir }}"
-        version: "{{ docker_mycroft_branch }}"
+        repo: "{{ docker_ovos_repository }}"
+        dest: "{{ docker_ovos_workdir }}"
+        version: "{{ docker_ovos_branch }}"
