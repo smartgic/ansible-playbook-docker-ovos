@@ -80,28 +80,28 @@
       changed_when: stable_build_output.rc == 0
       when: docker_ovos_version == "master"
 
-    - name: ALPHA - Populate Harbor with ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
-      ansible.builtin.shell:
-        cmd: >-
-          docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:alpha
-          registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:alpha &&
-          docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
-          registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
-        executable: /bin/bash
-        chdir: "{{ docker_ovos_workdir }}"
-      register: dev_build_output
-      changed_when: dev_build_output.rc == 0
-      when: docker_ovos_version == "alpha"
+    # - name: ALPHA - Populate Harbor with ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
+    #   ansible.builtin.shell:
+    #     cmd: >-
+    #       docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:alpha
+    #       registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:alpha &&
+    #       docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
+    #       registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
+    #     executable: /bin/bash
+    #     chdir: "{{ docker_ovos_workdir }}"
+    #   register: dev_build_output
+    #   changed_when: dev_build_output.rc == 0
+    #   when: docker_ovos_version == "alpha"
 
-    - name: STABLE - Populate Harbor with ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
-      ansible.builtin.shell:
-        cmd: >-
-          docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:stable
-          registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:stable &&
-          docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
-          registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
-        executable: /bin/bash
-        chdir: "{{ docker_ovos_workdir }}"
-      register: dev_build_output
-      changed_when: dev_build_output.rc == 0
-      when: docker_ovos_version == "master"
+    # - name: STABLE - Populate Harbor with ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
+    #   ansible.builtin.shell:
+    #     cmd: >-
+    #       docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:stable
+    #       registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:stable &&
+    #       docker tag {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
+    #       registry.smartgic.io/ovos/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
+    #     executable: /bin/bash
+    #     chdir: "{{ docker_ovos_workdir }}"
+    #   register: dev_build_output
+    #   changed_when: dev_build_output.rc == 0
+    #   when: docker_ovos_version == "master"
