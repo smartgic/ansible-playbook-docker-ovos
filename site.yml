@@ -6,6 +6,7 @@
 
   vars:
     docker_ovos_workdir: ~/docker-ovos
+    docker_ovos_cosign_key_path: ~/cosign.key
     docker_ovos_namespace: smartgic
     docker_ovos_stable_release: 0.0.8
     docker_ovos_version: master
@@ -54,7 +55,7 @@
     - name: ALPHA - Sign ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
       ansible.builtin.shell:
         cmd: >-
-          cosign sign --key {{ cosign_private_key }}
+          cosign sign --key {{ docker_ovos_cosign_key_path }}
           {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:alpha
           {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}a
           --yes
@@ -68,7 +69,7 @@
     - name: STABLE - Sign ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
       ansible.builtin.shell:
         cmd: >-
-          cosign sign --key {{ cosign_private_key }}
+          cosign sign --key {{ docker_ovos_cosign_key_path }}
           {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:stable
           {{ docker_ovos_namespace }}/ovos-{{ docker_ovos_image }}:{{ docker_ovos_stable_release }}
           --yes
