@@ -13,7 +13,16 @@
     docker_ovos_arch: linux/amd64
     docker_ovos_image: base
     docker_ovos_skill: false
+    docker_ovos_hivemind: false
     docker_ovos_cosign: false
+    image: >-
+      {% if docker_ovos_skill %}
+      skills/{{ docker_ovos_image }}
+      {% elif docker_ovos_hivemind %}
+      hivemind/{{ docker_ovos_image }}
+      {% else %}
+      {{ docker_ovos_image }}
+      {% endif %}
 
   tasks:
     - name: ALPHA - Build ovos-{{ docker_ovos_image + "-" + docker_ovos_arch }}
@@ -27,7 +36,7 @@
           --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           --build-arg VERSION={{ docker_ovos_stable_release }}a
           --platform {{ docker_ovos_arch }}
-          --push {{ "skills/" + docker_ovos_image if docker_ovos_skill else docker_ovos_image }}/
+          --push {{ image }}/
         executable: /bin/bash
         chdir: "{{ docker_ovos_workdir }}"
       register: dev_build_output
@@ -45,7 +54,7 @@
           --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           --build-arg VERSION={{ docker_ovos_stable_release }}
           --platform {{ docker_ovos_arch }}
-          --push {{ "skills/" + docker_ovos_image if docker_ovos_skill else docker_ovos_image }}/
+          --push {{ image }}/
         executable: /bin/bash
         chdir: "{{ docker_ovos_workdir }}"
       register: stable_build_output
