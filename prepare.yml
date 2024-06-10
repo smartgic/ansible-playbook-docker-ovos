@@ -7,7 +7,7 @@
     docker_ovos_workdir: ~/docker-ovos
     docker_ovos_cosign_key_path: ~/cosign.key
     docker_ovos_repository: https://github.com/OpenVoiceOS/ovos-docker.git
-    docker_ovos_branch: feat/alpine
+    docker_ovos_branch: dev
     docker_ovos_cosign: false
 
   tasks:
